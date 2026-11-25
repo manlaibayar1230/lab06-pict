@@ -1,0 +1,11 @@
+# POST /transfer — [ERROR] утгуудыг ~-ээр сөрөг утга болгосон
+From: Valid, ~Frozen, ~Missing
+To: Valid, ~Missing, ~SameAsFrom
+Amount: Normal, EqualBalance, ~Negative, ~Zero, ~OverBalance, ~OverLimit
+Currency: Same, Different
+DailyLimit: Unused, Partial, ~Exhausted
+
+# ~ нь "нэг мөрөнд нэг алдаа"-г хангадаг тул [ERROR]-ын хязгаарлалт хэрэггүй.
+# Харин [IF/property] (утгын бодит боломжит байдал) хязгаарлалт хэрэгтэй хэвээр:
+IF [Amount] = "OverLimit" THEN [DailyLimit] = "Partial";
+IF [Amount] = "EqualBalance" THEN [DailyLimit] = "Unused";

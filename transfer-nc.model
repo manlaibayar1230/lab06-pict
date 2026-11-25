@@ -1,0 +1,6 @@
+# POST /transfer — Хэсэг A-ийн сонголт/утга, хязгаарлалтгүй
+From: Valid, Frozen, Missing
+To: Valid, Missing, SameAsFrom
+Amount: Negative, Zero, Normal, EqualBalance, OverBalance, OverLimit
+Currency: Same, Different
+DailyLimit: Unused, Partial, Exhausted

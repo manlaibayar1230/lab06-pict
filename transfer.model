@@ -1,0 +1,17 @@
+# POST /transfer — A2-ын хязгаарлалттай
+From: Valid, Frozen, Missing
+To: Valid, Missing, SameAsFrom
+Amount: Negative, Zero, Normal, EqualBalance, OverBalance, OverLimit
+Currency: Same, Different
+DailyLimit: Unused, Partial, Exhausted
+
+# [ERROR]: алдаатай утга гарвал бусад параметр хүчинтэй байна (нэг мөрөнд нэг алдаа)
+IF [From] <> "Valid" THEN [To] = "Valid" AND [Amount] = "Normal" AND [DailyLimit] <> "Exhausted";
+IF [To] <> "Valid" THEN [Amount] = "Normal" AND [DailyLimit] <> "Exhausted";
+IF [Amount] IN {"Negative", "Zero", "OverBalance"} THEN [DailyLimit] <> "Exhausted";
+
+# [IF/property]: утга нь зөвхөн тодорхой орчинд утга учиртай
+# OverLimit = үлдэгдэлд багтах ч лимитийн үлдэгдлээс их -> зөвхөн Partial лимиттэй үед боломжтой
+IF [Amount] = "OverLimit" THEN [DailyLimit] = "Partial";
+# EqualBalance ([SINGLE] хил) амжилттай байхын тулд лимит бүтэн байна
+IF [Amount] = "EqualBalance" THEN [DailyLimit] = "Unused";
