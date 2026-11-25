@@ -43,7 +43,7 @@ Usage: pict model [options]
 | `currency` | Дансны валюттай харьцуулахад | **Same** — `MNT` (данс MNT) | `[property sameCur]` |
 |  |  | **Different** — `USD` → ханшаар MNT болгоно | `[property convert]` |
 | *Далд орчин:* өдрийн лимит | Өнөөдөр лимит хэр дүүрсэн бэ | **Unused** — өнөөдөр шилжүүлэг хийгээгүй (лимит 5 000 000₮ бүтэн) | — |
-|  |  | **Partial** — 4 000 000₮ ашигласан (1 000 000₮ үлдсэн) | — |
+|  |  | **Partial** — 4 500 000₮ ашигласан (500 000₮ үлдсэн) | — |
 |  |  | **Exhausted** — лимит бүрэн дүүрсэн (0₮ үлдсэн) | `[ERROR]` |
 
 Бусад далд орчин: ханшийн утга (тогтмол гэж үзэв), дансны үлдэгдэл (amount-ийн утгууд үлдэгдэлтэй харьцангуй тодорхойлогдсон тул тусад нь category гаргаагүй).
@@ -65,7 +65,7 @@ Usage: pict model [options]
 
 **324 → 14**
 
-## A3. Спецификацийн хүснэгт (16 мөр)
+## A3. Спецификацийн хүснэгт (18 мөр)
 
 Хүснэгтэд үлдэгдэл 1 000 000₮, өдрийн лимит 5 000 000₮, 1 USD = 3 500₮ гэж үзэв.
 
@@ -81,11 +81,13 @@ Usage: pict model [options]
 | 8 | Valid | Valid | Zero (0) | Same | Unused | 200 **ERROR_BAD_AMOUNT** | |
 | 9 | Valid | Valid | Negative (-5 000) | Same | Unused | 200 **ERROR_BAD_AMOUNT** | |
 | 10 | Valid | Valid | OverBalance (1 000 001) | Same | Unused | 200 **ERROR_INSUFFICIENT** | Хилээс +1 |
-| 11 | Valid | Valid | OverLimit (900 000 > 1 000 000 − ... лимит үлдэгдэл 500 000) | Same | Partial* | 200 **ERROR_LIMIT** | *4 500 000₮ ашигласан |
+| 11 | Valid | Valid | OverLimit (900 000) | Same | Partial | 200 **ERROR_LIMIT** | 900 000 ≤ үлдэгдэл, гэхдээ > лимитийн үлдэгдэл 500 000 |
 | 12 | Valid | Valid | Normal (50 000) | Same | Exhausted | 200 **ERROR_LIMIT** | Далд орчны `[ERROR]` |
 | 13 | Valid | Valid | OverBalance (300 USD = 1 050 000₮) | Different | Unused | 200 **ERROR_INSUFFICIENT** | 300 < 1 000 000 боловч хөрвүүлсний дараа хэтэрнэ — хөрвүүлэлтийн дүрмийг шалгана |
 | 14 | Frozen | Missing | Normal | Same | Unused | 200 **ERROR_FROZEN** | Давхар нөхцөл: from > to |
 | 15 | Valid | Missing | Zero | Same | Unused | 200 **ERROR_NO_TO** | Давхар нөхцөл: to > amount |
 | 16 | Valid | Valid | 2 000 000 (үлдэгдэл ба лимит хоёулаа хэтэрсэн) | Same | Partial | 200 **ERROR_INSUFFICIENT** | Давхар нөхцөл: INSUFFICIENT > LIMIT |
+| 17 | Valid | Valid | Normal (50 000) | Same | Partial | **201 OK** | Лимитийн үлдэгдэлд багтана |
+| 18 | Valid | Valid | Normal (10 USD = 35 000₮) | Different | Unused | **201 OK** | Хөрвүүлэлттэй, лимит бүтэн |
 
-Мөр 1–13 нь A2-ын 14 фреймийг (Different+Unused хослолоос бусдыг) хамарч, 14–16 нь давуу эрэмбийг шалгах нэмэлт давхар нөхцөл юм.
+A2-ын 14 фрейм: хүчинтэй 4 хослол (мөр 1, 2, 17, 18), `[SINGLE]` 1 (мөр 3), `[ERROR]` 9 (мөр 4–12). Мөр 13–16 нь хөрвүүлэлт болон давуу эрэмбийг (давхар нөхцөл) шалгах нэмэлт спецификаци.
